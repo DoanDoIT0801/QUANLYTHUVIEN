@@ -1,0 +1,133 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\DUAN2\\DOANNHOM\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|d:\\duan2\\doannhom\\frmmuontra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|solutionrelative:frmmuontra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|D:\\DUAN2\\DOANNHOM\\frmmuontra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|solutionrelative:frmmuontra.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|d:\\duan2\\doannhom\\frmlogin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|solutionrelative:frmlogin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|D:\\DUAN2\\DOANNHOM\\data\\muontrasach.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|solutionrelative:data\\muontrasach.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|D:\\DUAN2\\DOANNHOM\\frmmuontra.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|solutionrelative:frmmuontra.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|D:\\DUAN2\\DOANNHOM\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|D:\\DUAN2\\DOANNHOM\\data\\quanlythuvien.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{441EE199-58EA-43CC-8A8B-CE660398BFCA}|DOANNHOM.csproj|solutionrelative:data\\quanlythuvien.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "frmLogin.cs [Design]",
+              "DocumentMoniker": "D:\\DUAN2\\DOANNHOM\\frmLogin.cs",
+              "RelativeDocumentMoniker": "frmLogin.cs",
+              "ToolTip": "D:\\DUAN2\\DOANNHOM\\frmLogin.cs [Design]",
+              "RelativeToolTip": "frmLogin.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-21T02:13:41.471Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "frmMuonTra.cs [Design]",
+              "DocumentMoniker": "D:\\DUAN2\\DOANNHOM\\frmMuonTra.cs",
+              "RelativeDocumentMoniker": "frmMuonTra.cs",
+              "ToolTip": "D:\\DUAN2\\DOANNHOM\\frmMuonTra.cs [Design]",
+              "RelativeToolTip": "frmMuonTra.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-20T21:26:28.017Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\DUAN2\\DOANNHOM\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\DUAN2\\DOANNHOM\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-19T17:12:10.238Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "frmMuonTra.cs",
+              "DocumentMoniker": "D:\\DUAN2\\DOANNHOM\\frmMuonTra.cs",
+              "RelativeDocumentMoniker": "frmMuonTra.cs",
+              "ToolTip": "D:\\DUAN2\\DOANNHOM\\frmMuonTra.cs",
+              "RelativeToolTip": "frmMuonTra.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-19T17:08:58.394Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MuonTraSach.cs",
+              "DocumentMoniker": "D:\\DUAN2\\DOANNHOM\\data\\MuonTraSach.cs",
+              "RelativeDocumentMoniker": "data\\MuonTraSach.cs",
+              "ToolTip": "D:\\DUAN2\\DOANNHOM\\data\\MuonTraSach.cs",
+              "RelativeToolTip": "data\\MuonTraSach.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAA3wAwAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-19T17:06:13.662Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "frmMuonTra.Designer.cs",
+              "DocumentMoniker": "D:\\DUAN2\\DOANNHOM\\frmMuonTra.Designer.cs",
+              "RelativeDocumentMoniker": "frmMuonTra.Designer.cs",
+              "ToolTip": "D:\\DUAN2\\DOANNHOM\\frmMuonTra.Designer.cs",
+              "RelativeToolTip": "frmMuonTra.Designer.cs",
+              "ViewState": "AgIAAFsCAAAAAAAAAAAqwHsCAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-19T16:58:17.312Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "QuanLyThuVien.cs",
+              "DocumentMoniker": "D:\\DUAN2\\DOANNHOM\\data\\QuanLyThuVien.cs",
+              "RelativeDocumentMoniker": "data\\QuanLyThuVien.cs",
+              "ToolTip": "D:\\DUAN2\\DOANNHOM\\data\\QuanLyThuVien.cs",
+              "RelativeToolTip": "data\\QuanLyThuVien.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-14T07:07:10.059Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
