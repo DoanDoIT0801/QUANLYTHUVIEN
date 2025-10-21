@@ -212,7 +212,5 @@ namespace DOANNHOM
             rdNam.Checked = false;
             rdNu.Checked = false;
         }
-
-        
     }
 }
