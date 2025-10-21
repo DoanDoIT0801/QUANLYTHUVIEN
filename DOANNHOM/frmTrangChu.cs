@@ -19,9 +19,7 @@ namespace DOANNHOM
 
         private void kiemTraKichHoatForm(Form form)
         {
-            Form[] DSFormCon = this.MdiChildren;
-            var kiemTraTonTai = DSFormCon.Where(s => s.Name == form.Name).FirstOrDefault();
-
+            var kiemTraTonTai = this.MdiChildren.FirstOrDefault(s => s.Name == form.Name);
             if (kiemTraTonTai != null)
             {
                 kiemTraTonTai.Activate();
@@ -36,41 +34,73 @@ namespace DOANNHOM
 
         private void frmTrangChu_Load(object sender, EventArgs e)
         {
-
+            // this.KeyPreview = true; // nếu muốn xử lý KeyDown ở cấp form
+            // this.IsMdiContainer = true; // nếu đây là MDI Parent
         }
 
         private void tàiKhoảnToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            // mở “Thông tin tài khoản” nếu có
         }
 
         private void quảnLýSáchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmQuanLySach f = new frmQuanLySach();
-            kiemTraKichHoatForm(f);
+            kiemTraKichHoatForm(new frmQuanLySach());
         }
 
         private void độcGiảToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmDocGia f = new frmDocGia();
-            kiemTraKichHoatForm(f);
+            kiemTraKichHoatForm(new frmDocGia());
         }
 
         private void mượnTrảSáchToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmMuonTra f = new frmMuonTra();
-            kiemTraKichHoatForm(f);
+            kiemTraKichHoatForm(new frmMuonTra());
         }
 
         private void quánLýNhânViênToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+            // mở quản lý nhân viên nếu có
         }
 
         private void báoCáoThốngKêToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmBaoCaoThongKe f=new frmBaoCaoThongKe();
-            kiemTraKichHoatForm(f);
+            kiemTraKichHoatForm(new frmBaoCaoThongKe());
+        }
+
+        // ====== ĐĂNG XUẤT ======
+        private void DangXuat()
+        {
+            var confirm = MessageBox.Show("Bạn có muốn đăng xuất?",
+                                          "Đăng xuất", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirm != DialogResult.Yes) return;
+
+            // Đóng tất cả MDI con rồi đóng Trang Chủ
+            foreach (var child in this.MdiChildren) child.Close();
+
+            // Chỉ cần Close(); frmLogin sẽ Show lại nhờ FormClosed handler ở frmLogin
+            this.Close();
+        }
+
+        private void đăngXuấtToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DangXuat();
+        }
+
+        // Bắt phím ESC để đăng xuất nhanh
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                DangXuat();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void thôngTinTàiKhoảnToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // xử lý nếu có
         }
     }
 }
