@@ -24,7 +24,7 @@ namespace DOANNHOM
         }
 
         // Khi form được tải, hiển thị dữ liệu
-        private void frmQLNhanVien_Load(object sender, EventArgs e)
+        private void frmQLNhanVien_Load_1(object sender, EventArgs e)
         {
             LoadData();
         }
@@ -184,7 +184,7 @@ namespace DOANNHOM
         }
 
         // ------------------ CHỌN DÒNG TRONG DATAGRIDVIEW ------------------
-        private void dgvNV_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvNV_CellClick_1(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
@@ -212,5 +212,7 @@ namespace DOANNHOM
             rdNam.Checked = false;
             rdNu.Checked = false;
         }
+
+        
     }
 }

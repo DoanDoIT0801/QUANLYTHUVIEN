@@ -87,6 +87,7 @@
             this.dgvNV.RowTemplate.Height = 24;
             this.dgvNV.Size = new System.Drawing.Size(675, 431);
             this.dgvNV.TabIndex = 1;
+            this.dgvNV.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvNV_CellClick_1);
             // 
             // panel2
             // 
@@ -297,7 +298,7 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Quản Lý Nhân Viên";
             // 
-            // frnQlNhanVien
+            // frmQLNhanVien
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -306,8 +307,9 @@
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Name = "frnQlNhanVien";
+            this.Name = "frmQLNhanVien";
             this.Text = "frnQlNhanVien";
+            this.Load += new System.EventHandler(this.frmQLNhanVien_Load_1);
             this.panel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvNV)).EndInit();
             this.panel2.ResumeLayout(false);
