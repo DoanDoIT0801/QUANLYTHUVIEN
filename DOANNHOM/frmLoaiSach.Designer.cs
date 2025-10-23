@@ -30,9 +30,9 @@
         {
             this.label3 = new System.Windows.Forms.Label();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.dgvLS = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnLuu = new System.Windows.Forms.Button();
             this.btnThem = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.btnTroVe = new System.Windows.Forms.Button();
@@ -43,6 +43,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtMaLoai = new System.Windows.Forms.TextBox();
             this.txtLoaiSach = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLS)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -64,16 +65,6 @@
             this.txtTimKiem.TabIndex = 27;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(123, 31);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(134, 31);
-            this.label4.TabIndex = 29;
-            this.label4.Text = "Loại Sách";
-            // 
             // dgvLS
             // 
             this.dgvLS.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -81,9 +72,11 @@
             this.dgvLS.Name = "dgvLS";
             this.dgvLS.Size = new System.Drawing.Size(439, 330);
             this.dgvLS.TabIndex = 26;
+            this.dgvLS.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvLS_CellClick_1);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnLuu);
             this.groupBox1.Controls.Add(this.btnThem);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.btnTroVe);
@@ -100,6 +93,16 @@
             this.groupBox1.TabIndex = 25;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin loại sách";
+            // 
+            // btnLuu
+            // 
+            this.btnLuu.Location = new System.Drawing.Point(162, 213);
+            this.btnLuu.Name = "btnLuu";
+            this.btnLuu.Size = new System.Drawing.Size(97, 23);
+            this.btnLuu.TabIndex = 16;
+            this.btnLuu.Text = "Lưu";
+            this.btnLuu.UseVisualStyleBackColor = true;
+            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click);
             // 
             // btnThem
             // 
@@ -122,9 +125,9 @@
             // 
             // btnTroVe
             // 
-            this.btnTroVe.Location = new System.Drawing.Point(162, 213);
+            this.btnTroVe.Location = new System.Drawing.Point(76, 266);
             this.btnTroVe.Name = "btnTroVe";
-            this.btnTroVe.Size = new System.Drawing.Size(98, 23);
+            this.btnTroVe.Size = new System.Drawing.Size(135, 23);
             this.btnTroVe.TabIndex = 12;
             this.btnTroVe.Text = "Trở về";
             this.btnTroVe.UseVisualStyleBackColor = true;
@@ -189,14 +192,24 @@
             this.txtLoaiSach.Size = new System.Drawing.Size(156, 20);
             this.txtLoaiSach.TabIndex = 6;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(44, 25);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(134, 31);
+            this.label4.TabIndex = 29;
+            this.label4.Text = "Loại Sách";
+            // 
             // frmLoaiSach
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtTimKiem);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.dgvLS);
             this.Controls.Add(this.groupBox1);
             this.Name = "frmLoaiSach";
@@ -214,7 +227,6 @@
 
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtTimKiem;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DataGridView dgvLS;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnThem;
@@ -227,5 +239,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtMaLoai;
         private System.Windows.Forms.TextBox txtLoaiSach;
+        private System.Windows.Forms.Button btnLuu;
+        private System.Windows.Forms.Label label4;
     }
 }

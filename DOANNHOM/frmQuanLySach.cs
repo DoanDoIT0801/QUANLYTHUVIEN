@@ -152,7 +152,7 @@ namespace DOANNHOM
             if (rbNXB.Checked) TimKiem();
         }
 
-        // ================== MENU & CHUYỂN FORM ==================
+        // ================ MENU & CHUYỂN FORM ==================
         private void trangChủToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmDocGia frm = new frmDocGia();

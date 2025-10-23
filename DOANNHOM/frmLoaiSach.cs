@@ -10,7 +10,8 @@ namespace DOANNHOM
     public partial class frmLoaiSach : Form
     {
         private QuanLyThuVien db = new QuanLyThuVien();
-        private LoaiSach selectedLoai; // Lưu loại sách đang chọn
+        private LoaiSach selectedLoai;
+        private string currentAction = "";
 
         public frmLoaiSach()
         {
@@ -22,19 +23,17 @@ namespace DOANNHOM
             LoadData();
             dgvLS.CellClick += dgvLS_CellClick;
             txtTimKiem.TextChanged += txtTimKiem_TextChanged;
+
+            SetInputEnabled(false);
+            btnLuu.Enabled = false;
         }
 
         // ===== LOAD DỮ LIỆU =====
         private void LoadData()
         {
             var data = db.LoaiSach
-                         .Select(ls => new
-                         {
-                             ls.MaLoai,
-                             ls.TenLoaiSach,
-                             ls.GhiChu
-                         })
-                         .ToList();
+                .Select(ls => new { ls.MaLoai, ls.TenLoaiSach, ls.GhiChu })
+                .ToList();
 
             dgvLS.DataSource = data;
 
@@ -45,8 +44,25 @@ namespace DOANNHOM
             dgvLS.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dgvLS.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvLS.MultiSelect = false;
+            dgvLS.ReadOnly = true;
 
             ClearTextBoxes();
+        }
+
+        // ===== BẬT / TẮT Ô NHẬP =====
+        private void SetInputEnabled(bool enabled)
+        {
+            txtMaLoai.Enabled = enabled;
+            txtLoaiSach.Enabled = enabled;
+            txtGhiChu.Enabled = enabled;
+        }
+
+        // ===== BẬT / TẮT CÁC NÚT CHỨC NĂNG =====
+        private void SetButtonsEnabled(bool enabled)
+        {
+            btnThem.Enabled = enabled;
+            btnSua.Enabled = enabled;
+            btnXoa.Enabled = enabled;
         }
 
         // ===== XÓA TRẮNG Ô NHẬP =====
@@ -55,11 +71,6 @@ namespace DOANNHOM
             txtMaLoai.Clear();
             txtLoaiSach.Clear();
             txtGhiChu.Clear();
-
-            // ✅ Giờ cho phép nhập mã loại
-            txtMaLoai.Enabled = true;
-            txtLoaiSach.Focus();
-            selectedLoai = null;
         }
 
         // ===== CLICK DÒNG TRONG DATAGRID =====
@@ -79,74 +90,76 @@ namespace DOANNHOM
             }
         }
 
+        // ===== TÌM KIẾM REALTIME =====
+        private void txtTimKiem_TextChanged(object sender, EventArgs e)
+        {
+            string keyword = txtTimKiem.Text.Trim().ToLower();
+            var result = db.LoaiSach
+                .Where(ls =>
+                    ls.MaLoai.ToLower().Contains(keyword) ||
+                    ls.TenLoaiSach.ToLower().Contains(keyword) ||
+                    (ls.GhiChu ?? "").ToLower().Contains(keyword))
+                .Select(ls => new { ls.MaLoai, ls.TenLoaiSach, ls.GhiChu })
+                .ToList();
 
+            dgvLS.DataSource = result;
+        }
+
+        // ===== NÚT TRỞ VỀ =====
+        private void btnTroVe_Click(object sender, EventArgs e)
+        {
+            frmQuanLySach frm = new frmQuanLySach();
+            frm.Show();
+            Hide();
+        }
+
+        // ===== NÚT THÊM =====
+        private void btnThem_Click_1(object sender, EventArgs e)
+        {
+            ClearTextBoxes();
+            SetInputEnabled(true);
+            txtMaLoai.Enabled = true;
+
+            currentAction = "add";
+            btnLuu.Enabled = true;
+
+            // VÔ HIỆU HÓA CÁC NÚT KHÁC
+            SetButtonsEnabled(false);
+        }
+
+        // ===== NÚT SỬA =====
         private void btnSua_Click_1(object sender, EventArgs e)
         {
-            try
+            if (selectedLoai == null)
             {
-                if (selectedLoai == null)
-                {
-                    MessageBox.Show("Vui lòng chọn loại sách cần sửa!");
-                    return;
-                }
-
-                string oldMa = selectedLoai.MaLoai;
-                string newMa = txtMaLoai.Text.Trim();
-
-                if (db.LoaiSach.Any(x => x.MaLoai == newMa && x.MaLoai != oldMa))
-                {
-                    MessageBox.Show("Mã loại mới đã tồn tại, vui lòng chọn mã khác!");
-                    return;
-                }
-
-                // Tạo đối tượng mới
-                var newLoai = new LoaiSach
-                {
-                    MaLoai = newMa,
-                    TenLoaiSach = txtLoaiSach.Text.Trim(),
-                    GhiChu = txtGhiChu.Text.Trim()
-                };
-
-                db.LoaiSach.Add(newLoai);
-                db.LoaiSach.Remove(selectedLoai);
-                db.SaveChanges();
-
-                MessageBox.Show("Cập nhật thành công!");
-                LoadData();
+                MessageBox.Show("Vui lòng chọn loại sách cần sửa!", "Thông báo");
+                return;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi sửa: " + ex.Message);
-            }
+
+            SetInputEnabled(true);
+            txtMaLoai.Enabled = false; // Không cho sửa mã
+            currentAction = "edit";
+            btnLuu.Enabled = true;
+
+            // VÔ HIỆU HÓA CÁC NÚT KHÁC
+            SetButtonsEnabled(false);
         }
+
+        // ===== NÚT XÓA =====
         private void btnXoa_Click_1(object sender, EventArgs e)
         {
-            try
+            if (selectedLoai == null)
             {
-                if (selectedLoai == null)
-                {
-                    MessageBox.Show("Vui lòng chọn loại sách cần xóa!");
-                    return;
-                }
-
-                DialogResult dr = MessageBox.Show(
-                    "Bạn có chắc chắn muốn xóa loại sách này không?",
-                    "Xác nhận xóa",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
-
-                if (dr == DialogResult.Yes)
-                {
-                    db.LoaiSach.Remove(selectedLoai);
-                    db.SaveChanges();
-                    MessageBox.Show("Xóa thành công!");
-                    LoadData();
-                }
+                MessageBox.Show("Vui lòng chọn loại sách cần xóa!", "Thông báo");
+                return;
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Không thể xóa do ràng buộc dữ liệu!\nChi tiết: " + ex.Message);
-            }
+
+            SetInputEnabled(false);
+            currentAction = "delete";
+            btnLuu.Enabled = true;
+
+            // VÔ HIỆU HÓA CÁC NÚT KHÁC
+            SetButtonsEnabled(false);
         }
 
         private void btnTroVe_Click_1(object sender, EventArgs e)
@@ -156,59 +169,105 @@ namespace DOANNHOM
             Hide();
         }
 
-        private void txtTimKiem_TextChanged(object sender, EventArgs e)
+        private void dgvLS_CellClick_1(object sender, DataGridViewCellEventArgs e)
         {
-            string keyword = txtTimKiem.Text.Trim().ToLower();
+            if (e.RowIndex >= 0)
+            {
+                string ma = dgvLS.Rows[e.RowIndex].Cells["MaLoai"].Value.ToString();
+                selectedLoai = db.LoaiSach.FirstOrDefault(x => x.MaLoai == ma);
 
-            var result = db.LoaiSach
-                .Where(ls =>
-                    ls.MaLoai.ToLower().Contains(keyword) ||
-                    ls.TenLoaiSach.ToLower().Contains(keyword) ||
-                    (ls.GhiChu ?? "").ToLower().Contains(keyword))
-                .Select(ls => new
+                if (selectedLoai != null)
                 {
-                    ls.MaLoai,
-                    ls.TenLoaiSach,
-                    ls.GhiChu
-                })
-                .ToList();
-
-            dgvLS.DataSource = result;
+                    txtMaLoai.Text = selectedLoai.MaLoai;
+                    txtLoaiSach.Text = selectedLoai.TenLoaiSach;
+                    txtGhiChu.Text = selectedLoai.GhiChu;
+                }
+            }
         }
 
-        private void btnThem_Click_1(object sender, EventArgs e)
+        // ===== NÚT LƯU =====
+        private void btnLuu_Click(object sender, EventArgs e)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtMaLoai.Text) || string.IsNullOrWhiteSpace(txtLoaiSach.Text))
+                if (currentAction == "add")
                 {
-                    MessageBox.Show("Vui lòng nhập đầy đủ Mã Loại và Tên Loại Sách!", "Thông báo");
-                    return;
+                    if (string.IsNullOrWhiteSpace(txtMaLoai.Text) || string.IsNullOrWhiteSpace(txtLoaiSach.Text))
+                    {
+                        MessageBox.Show("Vui lòng nhập đầy đủ Mã loại và Tên loại sách!", "Thông báo");
+                        return;
+                    }
+
+                    if (db.LoaiSach.Any(x => x.MaLoai == txtMaLoai.Text.Trim()))
+                    {
+                        MessageBox.Show("Mã loại đã tồn tại!", "Cảnh báo");
+                        return;
+                    }
+
+                    var newLoai = new LoaiSach
+                    {
+                        MaLoai = txtMaLoai.Text.Trim(),
+                        TenLoaiSach = txtLoaiSach.Text.Trim(),
+                        GhiChu = txtGhiChu.Text.Trim()
+                    };
+
+                    db.LoaiSach.Add(newLoai);
+                    db.SaveChanges();
+                    MessageBox.Show("Thêm loại sách thành công!", "Thông báo");
+                }
+                else if (currentAction == "edit")
+                {
+                    if (selectedLoai == null)
+                    {
+                        MessageBox.Show("Vui lòng chọn loại sách để sửa!", "Thông báo");
+                        return;
+                    }
+
+                    selectedLoai.TenLoaiSach = txtLoaiSach.Text.Trim();
+                    selectedLoai.GhiChu = txtGhiChu.Text.Trim();
+
+                    db.SaveChanges();
+                    MessageBox.Show("Cập nhật loại sách thành công!", "Thông báo");
+                }
+                else if (currentAction == "delete")
+                {
+                    if (selectedLoai == null)
+                    {
+                        MessageBox.Show("Vui lòng chọn loại sách cần xóa!", "Thông báo");
+                        return;
+                    }
+
+                    if (MessageBox.Show("Bạn có chắc muốn xóa loại sách này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        db.LoaiSach.Remove(selectedLoai);
+                        db.SaveChanges();
+                        MessageBox.Show("Xóa loại sách thành công!", "Thông báo");
+                    }
+                    else
+                    {
+                        // User chọn No - hủy thao tác và BẬT LẠI CÁC NÚT
+                        currentAction = "";
+                        SetInputEnabled(false);
+                        btnLuu.Enabled = false;
+                        SetButtonsEnabled(true); // ← BẬT LẠI CÁC NÚT
+                        return;
+                    }
                 }
 
-                // Kiểm tra trùng mã
-                if (db.LoaiSach.Any(x => x.MaLoai == txtMaLoai.Text.Trim()))
-                {
-                    MessageBox.Show("Mã loại này đã tồn tại! Vui lòng nhập mã khác.", "Cảnh báo");
-                    return;
-                }
-
-                var newLoai = new LoaiSach
-                {
-                    MaLoai = txtMaLoai.Text.Trim(),
-                    TenLoaiSach = txtLoaiSach.Text.Trim(),
-                    GhiChu = txtGhiChu.Text.Trim()
-                };
-
-                db.LoaiSach.Add(newLoai);
-                db.SaveChanges();
-
-                MessageBox.Show("Thêm loại sách thành công!");
+                // Reset trạng thái sau khi lưu thành công
+                currentAction = "";
+                SetInputEnabled(false);
+                ClearTextBoxes();
                 LoadData();
+                btnLuu.Enabled = false;
+                selectedLoai = null;
+
+                // BẬT LẠI CÁC NÚT THÊM/SỬA/XÓA
+                SetButtonsEnabled(true);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi thêm: " + ex.Message);
+                MessageBox.Show("Lỗi khi lưu: " + ex.Message, "Lỗi");
             }
         }
     }

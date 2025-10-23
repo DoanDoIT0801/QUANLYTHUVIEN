@@ -139,7 +139,7 @@
             // btnLoaiSach
             // 
             this.btnLoaiSach.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
-            this.btnLoaiSach.Location = new System.Drawing.Point(27, 19);
+            this.btnLoaiSach.Location = new System.Drawing.Point(55, 19);
             this.btnLoaiSach.Name = "btnLoaiSach";
             this.btnLoaiSach.Size = new System.Drawing.Size(113, 38);
             this.btnLoaiSach.TabIndex = 17;
@@ -150,7 +150,7 @@
             // btnNXB
             // 
             this.btnNXB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.btnNXB.Location = new System.Drawing.Point(200, 69);
+            this.btnNXB.Location = new System.Drawing.Point(226, 69);
             this.btnNXB.Name = "btnNXB";
             this.btnNXB.Size = new System.Drawing.Size(113, 38);
             this.btnNXB.TabIndex = 18;
@@ -161,7 +161,7 @@
             // btnQLS
             // 
             this.btnQLS.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
-            this.btnQLS.Location = new System.Drawing.Point(167, 19);
+            this.btnQLS.Location = new System.Drawing.Point(226, 22);
             this.btnQLS.Name = "btnQLS";
             this.btnQLS.Size = new System.Drawing.Size(113, 38);
             this.btnQLS.TabIndex = 15;
@@ -182,9 +182,9 @@
             // 
             // btnTrangChu
             // 
-            this.btnTrangChu.Location = new System.Drawing.Point(708, 23);
+            this.btnTrangChu.Location = new System.Drawing.Point(682, 21);
             this.btnTrangChu.Name = "btnTrangChu";
-            this.btnTrangChu.Size = new System.Drawing.Size(75, 23);
+            this.btnTrangChu.Size = new System.Drawing.Size(101, 33);
             this.btnTrangChu.TabIndex = 27;
             this.btnTrangChu.Text = "Trang Chủ";
             this.btnTrangChu.UseVisualStyleBackColor = true;
@@ -204,9 +204,9 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnTrangChu);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.btnTrangChu);
             this.Controls.Add(this.dgvDSTK);
             this.Name = "frmQuanLySach";
             this.Text = "frmQuanLySach";

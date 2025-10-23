@@ -30,9 +30,9 @@
         {
             this.label3 = new System.Windows.Forms.Label();
             this.txtTimKiem = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.dgvTG = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnLuu = new System.Windows.Forms.Button();
             this.btnThem = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.btnTroVe = new System.Windows.Forms.Button();
@@ -43,6 +43,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtMaTG = new System.Windows.Forms.TextBox();
             this.txtTenTG = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTG)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -64,16 +65,6 @@
             this.txtTimKiem.TabIndex = 32;
             this.txtTimKiem.TextChanged += new System.EventHandler(this.txtTimKiem_TextChanged);
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(117, 26);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(109, 31);
-            this.label4.TabIndex = 34;
-            this.label4.Text = "Tác Giả";
-            // 
             // dgvTG
             // 
             this.dgvTG.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -85,6 +76,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnLuu);
             this.groupBox1.Controls.Add(this.btnThem);
             this.groupBox1.Controls.Add(this.label7);
             this.groupBox1.Controls.Add(this.btnTroVe);
@@ -101,6 +93,16 @@
             this.groupBox1.TabIndex = 30;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Thông tin loại sách";
+            // 
+            // btnLuu
+            // 
+            this.btnLuu.Location = new System.Drawing.Point(104, 268);
+            this.btnLuu.Name = "btnLuu";
+            this.btnLuu.Size = new System.Drawing.Size(75, 23);
+            this.btnLuu.TabIndex = 35;
+            this.btnLuu.Text = "Lưu";
+            this.btnLuu.UseVisualStyleBackColor = true;
+            this.btnLuu.Click += new System.EventHandler(this.btnLuu_Click_1);
             // 
             // btnThem
             // 
@@ -190,14 +192,24 @@
             this.txtTenTG.Size = new System.Drawing.Size(156, 20);
             this.txtTenTG.TabIndex = 6;
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(78, 27);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(109, 31);
+            this.label4.TabIndex = 34;
+            this.label4.Text = "Tác Giả";
+            // 
             // frmTacGia
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtTimKiem);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.dgvTG);
             this.Controls.Add(this.groupBox1);
             this.Name = "frmTacGia";
@@ -215,7 +227,6 @@
 
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtTimKiem;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DataGridView dgvTG;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button btnThem;
@@ -228,5 +239,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtMaTG;
         private System.Windows.Forms.TextBox txtTenTG;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button btnLuu;
     }
 }
