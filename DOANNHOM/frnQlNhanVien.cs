@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DOANNHOM.data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.Entity;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,37 +15,88 @@ namespace DOANNHOM
 {
     public partial class frmQLNhanVien : Form
     {
-        string connectionString = "data source=LAPTOP-9GGQMNJG\\SQLEXPRESS;initial catalog=QuanLyThuVienDB;integrated security=True;trustservercertificate=True;MultipleActiveResultSets=True;App=EntityFramework";
+        /*string imagePath = "";*/
+        QuanLyThuVien db = new QuanLyThuVien();
 
-        string imagePath = ""; // Lưu đường dẫn ảnh tạm thời
+        private string currentAction = ""; // "THEM", "SUA", "XOA", ""
 
         public frmQLNhanVien()
         {
             InitializeComponent();
         }
 
-        // Khi form được tải, hiển thị dữ liệu
-        private void frmQLNhanVien_Load_1(object sender, EventArgs e)
+        // ------------------ KHI FORM LOAD ------------------
+        private void frmQLNhanVien_Load(object sender, EventArgs e)
         {
             LoadData();
+            ResetButtonState();
+            SetControlState(false);
         }
 
-        // ------------------ HÀM LOAD DỮ LIỆU ------------------
+        // ------------------ QUẢN LÝ TRẠNG THÁI CONTROL ------------------
+        private void SetControlState(bool isEnabled)
+        {
+            txtMaNV.Enabled = isEnabled;
+            txtTenNV.Enabled = isEnabled;
+            txtSDT.Enabled = isEnabled;
+            txtDiaChi.Enabled = isEnabled;
+            txtMK.Enabled = isEnabled;
+            rdNam.Enabled = isEnabled;
+            rdNu.Enabled = isEnabled;
+        }
+
+        private void ResetButtonState()
+        {
+            btnDK.Enabled = true;
+            btnDoiMK.Enabled = true;
+            btnXoa.Enabled = true;
+            btnHuy.Enabled = false;
+            currentAction = "";
+        }
+
+        private void ClearInput()
+        {
+            txtMaNV.Clear();
+            txtTenNV.Clear();
+            txtSDT.Clear();
+            txtDiaChi.Clear();
+            txtMK.Clear();
+            rdNam.Checked = false;
+            rdNu.Checked = false;
+        }
+
+        // ------------------ LOAD DỮ LIỆU ------------------
         private void LoadData()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "SELECT * FROM NhanVien"; // Lấy tất cả nhân viên
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                dgvNV.DataSource = dt;
-            }
+            var list = db.NhanVien
+                .Select(x => new
+                {
+                    x.MaNhanVien,
+                    x.TenNhanVien,
+                    x.SoDienThoai,
+                    x.DiaChi,
+                    x.GioiTinh,
+                    x.MatKhau
+                })
+                .ToList();
+
+            dgvNV.DataSource = list;
         }
 
-        // ------------------ NÚT THÊM (ĐĂNG KÝ) ------------------
+        // ------------------ ĐĂNG KÝ (THÊM) ------------------
         private void btnDK_Click(object sender, EventArgs e)
         {
+            if (currentAction == "")
+            {
+                currentAction = "THEM";
+                SetControlState(true);
+                ClearInput();
+                btnDoiMK.Enabled = false;
+                btnXoa.Enabled = false;
+                btnHuy.Enabled = true;
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(txtMaNV.Text))
             {
                 MessageBox.Show("Vui lòng nhập mã nhân viên!");
@@ -53,39 +105,43 @@ namespace DOANNHOM
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                if (db.NhanVien.Any(x => x.MaNhanVien == txtMaNV.Text.Trim()))
                 {
-                    conn.Open();
-
-                    // Kiểm tra trùng mã
-                    string checkQuery = "SELECT COUNT(*) FROM NhanVien WHERE MaNhanVien = @MaNhanVien";
-                    SqlCommand checkCmd = new SqlCommand(checkQuery, conn);
-                    checkCmd.Parameters.AddWithValue("@MaNhanVien", txtMaNV.Text.Trim());
-                    int exists = (int)checkCmd.ExecuteScalar();
-
-                    if (exists > 0)
-                    {
-                        MessageBox.Show("Mã nhân viên đã tồn tại!");
-                        return;
-                    }
-
-                    // Thêm nhân viên mới
-                    string insertQuery = @"INSERT INTO NhanVien (MaNhanVien, TenNhanVien, SoDienThoai, DiaChi, GioiTinh, MatKhau)
-                                           VALUES (@MaNhanVien, @TenNhanVien, @SoDienThoai, @DiaChi, @GioiTinh, @MatKhau)";
-                    SqlCommand cmd = new SqlCommand(insertQuery, conn);
-                    cmd.Parameters.AddWithValue("@MaNhanVien", txtMaNV.Text.Trim());
-                    cmd.Parameters.AddWithValue("@TenNhanVien", txtTenNV.Text.Trim());
-                    cmd.Parameters.AddWithValue("@SoDienThoai", txtSDT.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DiaChi", txtDiaChi.Text.Trim());
-                    cmd.Parameters.AddWithValue("@GioiTinh", rdNam.Checked ? "Nam" : "Nữ");
-                    cmd.Parameters.AddWithValue("@MatKhau", txtMK.Text.Trim());
-
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Thêm nhân viên mới thành công!");
+                    MessageBox.Show("Mã nhân viên đã tồn tại!");
+                    return;
                 }
 
+                string sdt = txtSDT.Text.Trim();
+                if (string.IsNullOrEmpty(sdt))
+                {
+                    MessageBox.Show("Vui lòng nhập số điện thoại!");
+                    return;
+                }
+
+                if (!int.TryParse(sdt, out int soDienThoai))
+                {
+                    MessageBox.Show("Số điện thoại phải là số!");
+                    return;
+                }
+
+                var nv = new NhanVien
+                {
+                    MaNhanVien = txtMaNV.Text.Trim(),
+                    TenNhanVien = txtTenNV.Text.Trim(),
+                    SoDienThoai = soDienThoai,
+                    DiaChi = txtDiaChi.Text.Trim(),
+                    GioiTinh = rdNam.Checked ? "Nam" : "Nữ",
+                    MatKhau = txtMK.Text.Trim()
+                };
+
+                db.NhanVien.Add(nv);
+                db.SaveChanges();
+
+                MessageBox.Show("Thêm nhân viên thành công!");
                 LoadData();
                 ClearInput();
+                ResetButtonState();
+                SetControlState(false);
             }
             catch (Exception ex)
             {
@@ -93,83 +149,111 @@ namespace DOANNHOM
             }
         }
 
-        // ------------------ NÚT SỬA (ĐỔI MẬT KHẨU) ------------------
+        // ------------------ ĐỔI MẬT KHẨU (SỬA) ------------------
         private void btnDoiMK_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtMaNV.Text))
+            if (currentAction == "")
             {
-                MessageBox.Show("Vui lòng nhập mã nhân viên cần sửa!");
+                currentAction = "SUA";
+                SetControlState(true);
+                btnDK.Enabled = false;
+                btnXoa.Enabled = false;
+                btnHuy.Enabled = true;
+                return;
+            }
+
+            string maNV = txtMaNV.Text.Trim();
+            string matKhauMoi = txtMK.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(maNV))
+            {
+                MessageBox.Show("Vui lòng nhập mã nhân viên cần đổi mật khẩu!");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(matKhauMoi))
+            {
+                MessageBox.Show("Vui lòng nhập mật khẩu mới!");
                 return;
             }
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                var nv = db.NhanVien.FirstOrDefault(x => x.MaNhanVien == maNV);
+                if (nv == null)
                 {
-                    string updateQuery = @"UPDATE NhanVien
-                                           SET TenNhanVien = @TenNhanVien, 
-                                               SoDienThoai = @SoDienThoai, 
-                                               DiaChi = @DiaChi,
-                                               GioiTinh = @GioiTinh, 
-                                               MatKhau = @MatKhau
-                                           WHERE MaNhanVien = @MaNhanVien";
-                    SqlCommand cmd = new SqlCommand(updateQuery, conn);
-                    cmd.Parameters.AddWithValue("@MaNhanVien", txtMaNV.Text.Trim());
-                    cmd.Parameters.AddWithValue("@TenNhanVien", txtTenNV.Text.Trim());
-                    cmd.Parameters.AddWithValue("@SoDienThoai", txtSDT.Text.Trim());
-                    cmd.Parameters.AddWithValue("@DiaChi", txtDiaChi.Text.Trim());
-                    cmd.Parameters.AddWithValue("@GioiTinh", rdNam.Checked ? "Nam" : "Nữ");
-                    cmd.Parameters.AddWithValue("@MatKhau", txtMK.Text.Trim());
-
-                    conn.Open();
-                    int rows = cmd.ExecuteNonQuery();
-
-                    if (rows > 0)
-                        MessageBox.Show("Cập nhật nhân viên thành công!");
-                    else
-                        MessageBox.Show("Không tìm thấy nhân viên để cập nhật!");
+                    MessageBox.Show("Không tìm thấy nhân viên có mã này!");
+                    return;
                 }
 
-                LoadData();
-                ClearInput();
+                if (nv.MatKhau == matKhauMoi)
+                {
+                    MessageBox.Show("Mật khẩu mới trùng với mật khẩu cũ, vui lòng nhập mật khẩu khác!");
+                    return;
+                }
+
+                var confirm = MessageBox.Show(
+                    $"Bạn có chắc muốn đổi mật khẩu cho nhân viên '{nv.TenNhanVien}'?",
+                    "Xác nhận đổi mật khẩu",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (confirm == DialogResult.Yes)
+                {
+                    nv.MatKhau = matKhauMoi;
+                    db.SaveChanges();
+
+                    MessageBox.Show("Đổi mật khẩu thành công!");
+                    LoadData();
+                    ClearInput();
+                    ResetButtonState();
+                    SetControlState(false);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi khi cập nhật: " + ex.Message);
+                MessageBox.Show("Lỗi khi đổi mật khẩu: " + ex.Message);
             }
         }
 
-        // ------------------ NÚT XÓA ------------------
+        // ------------------ XÓA ------------------
         private void btnXoa_Click(object sender, EventArgs e)
         {
+            if (currentAction == "")
+            {
+                currentAction = "XOA";
+                btnDK.Enabled = false;
+                btnDoiMK.Enabled = false;
+                btnHuy.Enabled = true;
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(txtMaNV.Text))
             {
                 MessageBox.Show("Vui lòng chọn nhân viên cần xóa!");
                 return;
             }
 
-            DialogResult result = MessageBox.Show("Bạn có chắc muốn xóa nhân viên này?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (result == DialogResult.No)
-                return;
+            var confirm = MessageBox.Show("Bạn có chắc muốn xóa nhân viên này?",
+                "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (confirm == DialogResult.No) return;
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                var nv = db.NhanVien.FirstOrDefault(x => x.MaNhanVien == txtMaNV.Text.Trim());
+                if (nv == null)
                 {
-                    string query = "DELETE FROM NhanVien WHERE MaNhanVien = @MaNhanVien";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@MaNhanVien", txtMaNV.Text.Trim());
-                    conn.Open();
-                    int rows = cmd.ExecuteNonQuery();
-
-                    if (rows > 0)
-                        MessageBox.Show("Xóa nhân viên thành công!");
-                    else
-                        MessageBox.Show("Không tìm thấy nhân viên cần xóa!");
+                    MessageBox.Show("Không tìm thấy nhân viên cần xóa!");
+                    return;
                 }
 
+                db.NhanVien.Remove(nv);
+                db.SaveChanges();
+
+                MessageBox.Show("Xóa nhân viên thành công!");
                 LoadData();
                 ClearInput();
+                ResetButtonState();
+                SetControlState(false);
             }
             catch (Exception ex)
             {
@@ -177,14 +261,16 @@ namespace DOANNHOM
             }
         }
 
-        // ------------------ NÚT THOÁT ------------------
-        private void btnThoat_Click(object sender, EventArgs e)
+        // ------------------ HỦY ------------------
+        private void btnHuy_Click(object sender, EventArgs e)
         {
-            this.Close();
+            ClearInput();
+            SetControlState(false);
+            ResetButtonState();
         }
 
-        // ------------------ CHỌN DÒNG TRONG DATAGRIDVIEW ------------------
-        private void dgvNV_CellClick_1(object sender, DataGridViewCellEventArgs e)
+        // ------------------ CLICK TRONG DATAGRIDVIEW ------------------
+        private void dgvNV_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)
             {
@@ -196,21 +282,47 @@ namespace DOANNHOM
                 txtMK.Text = row.Cells["MatKhau"].Value?.ToString();
 
                 string gioiTinh = row.Cells["GioiTinh"].Value?.ToString();
-                if (gioiTinh == "Nam") rdNam.Checked = true;
-                else rdNu.Checked = true;
+                rdNam.Checked = (gioiTinh == "Nam");
+                rdNu.Checked = (gioiTinh == "Nữ");
             }
         }
 
-        // ------------------ HÀM XÓA DỮ LIỆU TRÊN FORM ------------------
-        private void ClearInput()
+        // ------------------ TÌM KIẾM REALTIME ------------------
+        private void txtTimKiemNV_TextChanged(object sender, EventArgs e)
         {
-            txtMaNV.Clear();
-            txtTenNV.Clear();
-            txtSDT.Clear();
-            txtDiaChi.Clear();
-            txtMK.Clear();
-            rdNam.Checked = false;
-            rdNu.Checked = false;
+            string tuKhoa = txtTimKiemNV.Text.Trim();
+            var query = db.NhanVien.AsQueryable();
+
+            if (!string.IsNullOrEmpty(tuKhoa))
+            {
+                if (rdoMaNV.Checked)
+                    query = query.Where(x => x.MaNhanVien.Contains(tuKhoa));
+                else if (rdoTenNV.Checked)
+                    query = query.Where(x => x.TenNhanVien.Contains(tuKhoa));
+                else if (rdoGioiTinh.Checked)
+                    query = query.Where(x => x.GioiTinh.Contains(tuKhoa));
+            }
+
+            var list = query
+                .Select(x => new
+                {
+                    x.MaNhanVien,
+                    x.TenNhanVien,
+                    x.SoDienThoai,
+                    x.DiaChi,
+                    x.GioiTinh,
+                    x.MatKhau
+                })
+                .ToList();
+
+            dgvNV.DataSource = list;
         }
+
+        // ------------------ THOÁT ------------------
+        private void btnThoat_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        //done
     }
 }

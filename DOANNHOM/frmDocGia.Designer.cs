@@ -54,6 +54,7 @@
             this.txtMaSV = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.btnThoat = new System.Windows.Forms.Button();
+            this.btnHuy = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -173,6 +174,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnHuy);
             this.groupBox1.Controls.Add(this.txtSDT);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.btnXoa);
@@ -211,7 +213,7 @@
             // 
             // btnXoa
             // 
-            this.btnXoa.Location = new System.Drawing.Point(260, 254);
+            this.btnXoa.Location = new System.Drawing.Point(202, 252);
             this.btnXoa.Name = "btnXoa";
             this.btnXoa.Size = new System.Drawing.Size(74, 35);
             this.btnXoa.TabIndex = 11;
@@ -221,7 +223,7 @@
             // 
             // btnSua
             // 
-            this.btnSua.Location = new System.Drawing.Point(164, 254);
+            this.btnSua.Location = new System.Drawing.Point(106, 252);
             this.btnSua.Name = "btnSua";
             this.btnSua.Size = new System.Drawing.Size(74, 35);
             this.btnSua.TabIndex = 10;
@@ -231,7 +233,7 @@
             // 
             // btnThem
             // 
-            this.btnThem.Location = new System.Drawing.Point(71, 254);
+            this.btnThem.Location = new System.Drawing.Point(13, 252);
             this.btnThem.Name = "btnThem";
             this.btnThem.Size = new System.Drawing.Size(74, 35);
             this.btnThem.TabIndex = 9;
@@ -311,7 +313,17 @@
             this.btnThoat.TabIndex = 17;
             this.btnThoat.Text = "Thoát";
             this.btnThoat.UseVisualStyleBackColor = true;
-            this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click_1);
+            this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
+            // 
+            // btnHuy
+            // 
+            this.btnHuy.Location = new System.Drawing.Point(298, 252);
+            this.btnHuy.Name = "btnHuy";
+            this.btnHuy.Size = new System.Drawing.Size(74, 35);
+            this.btnHuy.TabIndex = 23;
+            this.btnHuy.Text = "Hủy Bỏ";
+            this.btnHuy.UseVisualStyleBackColor = true;
+            this.btnHuy.Click += new System.EventHandler(this.btnHuy_Click);
             // 
             // frmDocGia
             // 
@@ -363,5 +375,6 @@
         private System.Windows.Forms.TextBox txtMaSV;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnThoat;
+        private System.Windows.Forms.Button btnHuy;
     }
 }

@@ -1,10 +1,13 @@
-﻿using System;
+﻿using DOANNHOM.data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SqlClient;
+using System.Data.Entity;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,160 +16,256 @@ namespace DOANNHOM
 {
     public partial class frmDocGia : Form
     {
-        string connectionString = "data source=LAPTOP-66PONRPJ\\SQLEXPRESS;initial catalog=QuanLyThuVienDB;integrated security=True;trustservercertificate=True;MultipleActiveResultSets=True;App=EntityFramework";
+        // Khai báo DbContext
+        QuanLyThuVien db = new QuanLyThuVien();
+
+        /*private bool isAddingMode = false;*/
+        private string currentAction = ""; // theo dõi hành động hiện tại: "THEM", "SUA", "XOA", ""
+
         public frmDocGia()
         {
             InitializeComponent();
         }
 
-        //  Khi form mở lên, load dữ liệu ban đầu
+        // ------------------ KHI FORM LOAD ------------------
         private void frmDocGia_Load(object sender, EventArgs e)
         {
             LoadData();
+            SetControlState(false); // Disable textbox
+            ResetButtonState();     // Đặt lại trạng thái ban đầu các nút
         }
 
-        // Hàm tải lại toàn bộ dữ liệu từ bảng SinhVien
+        // ------------------ QUẢN LÝ TRẠNG THÁI CONTROL ------------------
+        private void SetControlState(bool isEnabled)
+        {
+            txtMaSV.Enabled = isEnabled;
+            txtTenSV.Enabled = isEnabled;
+            txtNganhHoc.Enabled = isEnabled;
+            txtKhoaHoc.Enabled = isEnabled;
+            txtSDT.Enabled = isEnabled;
+        }
+
+        private void ResetButtonState()
+        {
+            btnThem.Enabled = true;
+            btnSua.Enabled = true;
+            btnXoa.Enabled = true;
+            btnHuy.Enabled = false;
+            currentAction = "";
+        }
+
+        private void ClearInput()
+        {
+            txtMaSV.Clear();
+            txtTenSV.Clear();
+            txtNganhHoc.Clear();
+            txtKhoaHoc.Clear();
+            txtSDT.Clear();
+        }
+
+        // ------------------ LOAD DỮ LIỆU ------------------
         private void LoadData()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "SELECT * FROM SinhVien";
-                SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                dgvDocGia.DataSource = dt; // hiển thị lên DataGridView
-            }
+            var list = db.SinhVien
+                .Select(x => new
+                {
+                    x.MaSV,
+                    x.TenSV,
+                    x.NganhHoc,
+                    x.KhoaHoc,
+                    x.SoDienThoai
+                })
+                .ToList();
+
+            dgvDocGia.DataSource = list;
         }
 
-        // Nút Thêm dữ liệu mới
+        // ------------------ NÚT THÊM ------------------
         private void btnThem_Click(object sender, EventArgs e)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            if (currentAction == "") // chuyển sang chế độ thêm
             {
-                string sql = "INSERT INTO SinhVien (MaSV, TenSV, NganhHoc, KhoaHoc, SoDienThoai) VALUES (@Ma, @Ten, @Nganh, @Khoa, @SDT)";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
-                // Gán dữ liệu từ textbox vào câu lệnh SQL
-                cmd.Parameters.AddWithValue("@Ma", txtMaSV.Text.Trim());
-                cmd.Parameters.AddWithValue("@Ten", txtTenSV.Text.Trim());
-                cmd.Parameters.AddWithValue("@Nganh", txtNganhHoc.Text.Trim());
-                cmd.Parameters.AddWithValue("@Khoa", txtKhoaHoc.Text.Trim());
-                cmd.Parameters.AddWithValue("@SDT", txtSDT.Text.Trim());
-
-                try
-                {
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Thêm thành công!", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    LoadData(); // Cập nhật lại bảng
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi khi thêm: " + ex.Message);
-                }
-            }
-        }
-
-        // Nút Sửa dữ liệu
-        private void btnSua_Click(object sender, EventArgs e)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string sql = "UPDATE SinhVien SET TenSV=@Ten, NganhHoc=@Nganh, KhoaHoc=@Khoa, SoDienThoai=@SDT WHERE MaSV=@Ma";
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
-                cmd.Parameters.AddWithValue("@Ma", txtMaSV.Text.Trim());
-                cmd.Parameters.AddWithValue("@Ten", txtTenSV.Text.Trim());
-                cmd.Parameters.AddWithValue("@Nganh", txtNganhHoc.Text.Trim());
-                cmd.Parameters.AddWithValue("@Khoa", txtKhoaHoc.Text.Trim());
-                cmd.Parameters.AddWithValue("@SDT", txtSDT.Text.Trim());
-
-                try
-                {
-                    conn.Open();
-                    int rows = cmd.ExecuteNonQuery();
-
-                    if (rows > 0)
-                        MessageBox.Show("Sửa thành công!", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    else
-                        MessageBox.Show("Không tìm thấy mã sinh viên để sửa!", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                    LoadData();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Lỗi khi sửa: " + ex.Message);
-                }
-            }
-        }
-
-        // Nút Xóa dữ liệu
-        private void btnXoa_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(txtMaSV.Text))
-            {
-                MessageBox.Show("Vui lòng chọn sinh viên để xóa!", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                currentAction = "THEM";
+                SetControlState(true);
+                ClearInput();
+                btnSua.Enabled = false;
+                btnXoa.Enabled = false;
+                btnHuy.Enabled = true;
+                MessageBox.Show("Đang trong chế độ Thêm", "Thông báo");
                 return;
             }
 
-            DialogResult confirm = MessageBox.Show("Bạn có chắc muốn xóa sinh viên này không?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-            if (confirm == DialogResult.Yes)
+            if (string.IsNullOrWhiteSpace(txtMaSV.Text))
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                MessageBox.Show("Vui lòng nhập mã độc giả!");
+                return;
+            }
+
+            try
+            {
+                if (db.SinhVien.Any(x => x.MaSV == txtMaSV.Text.Trim()))
                 {
-                    string sql = "DELETE FROM SinhVien WHERE MaSV=@Ma";
-                    SqlCommand cmd = new SqlCommand(sql, conn);
-                    cmd.Parameters.AddWithValue("@Ma", txtMaSV.Text.Trim());
+                    MessageBox.Show("Mã độc giả đã tồn tại!");
+                    return;
+                }
 
-                    try
+                string sdt = txtSDT.Text.Trim();
+                if (string.IsNullOrEmpty(sdt))
+                {
+                    MessageBox.Show("Vui lòng nhập số điện thoại!");
+                    return;
+                }
+                if (!int.TryParse(sdt, out int soDienThoai))
+                {
+                    MessageBox.Show("Số điện thoại phải là số!");
+                    return;
+                }
+
+                var dg = new SinhVien
+                {
+                    MaSV = txtMaSV.Text.Trim(),
+                    TenSV = txtTenSV.Text.Trim(),
+                    NganhHoc = txtNganhHoc.Text.Trim(),
+                    KhoaHoc = txtKhoaHoc.Text.Trim(),
+                    SoDienThoai = soDienThoai
+                };
+
+                db.SinhVien.Add(dg);
+                db.SaveChanges();
+
+                MessageBox.Show("Thêm độc giả thành công!");
+                LoadData();
+                ClearInput();
+                ResetButtonState();
+                SetControlState(false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi thêm độc giả: " + ex.Message);
+            }
+        }
+
+        // ------------------ SỬA ------------------
+        private void btnSua_Click(object sender, EventArgs e)
+        {
+            if (currentAction == "")
+            {
+                currentAction = "SUA";
+                SetControlState(true);
+                btnThem.Enabled = false;
+                btnXoa.Enabled = false;
+                btnHuy.Enabled = true;
+                MessageBox.Show("Đang trong chế độ Sửa", "Thông báo");
+                return;
+            }
+
+            string maDG = txtMaSV.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(maDG))
+            {
+                MessageBox.Show("Vui lòng nhập mã độc giả cần sửa!");
+                return;
+            }
+
+            try
+            {
+                var dg = db.SinhVien.FirstOrDefault(x => x.MaSV == maDG);
+                if (dg == null)
+                {
+                    MessageBox.Show("Không tìm thấy độc giả có mã này!");
+                    return;
+                }
+
+                var confirm = MessageBox.Show(
+                    $"Bạn có chắc muốn cập nhật thông tin cho độc giả '{dg.TenSV}'?",
+                    "Xác nhận sửa thông tin",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirm == DialogResult.Yes)
+                {
+                    dg.TenSV = txtTenSV.Text.Trim();
+                    dg.NganhHoc = txtNganhHoc.Text.Trim();
+                    dg.KhoaHoc = txtKhoaHoc.Text.Trim();
+
+                    if (int.TryParse(txtSDT.Text.Trim(), out int sdtMoi))
                     {
-                        conn.Open();
-                        int rows = cmd.ExecuteNonQuery();
-
-                        if (rows > 0)
-                            MessageBox.Show("Xóa thành công!", "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        else
-                            MessageBox.Show("Không tìm thấy mã sinh viên để xóa!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-                        LoadData();
+                        dg.SoDienThoai = sdtMoi;
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        MessageBox.Show("Lỗi khi xóa: " + ex.Message);
+                        MessageBox.Show("Số điện thoại không hợp lệ!");
+                        return;
                     }
+
+                    db.SaveChanges();
+
+                    MessageBox.Show("Cập nhật thông tin thành công!");
+                    LoadData();
+                    ClearInput();
+                    ResetButtonState();
+                    SetControlState(false);
                 }
             }
-        }
-
-        // Nút Tìm kiếm
-        private void btnTimKiem_Click(object sender, EventArgs e)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            catch (Exception ex)
             {
-                string sql = "SELECT * FROM SinhVien WHERE 1=1";
-
-                if (rbTimTheoMa.Checked)
-                    sql += " AND MaSV LIKE @TuKhoa";
-                else if (rbTimTheoTen.Checked)
-                    sql += " AND TenSV LIKE @TuKhoa";
-
-                SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@TuKhoa", "%" + txtTimKiem.Text.Trim() + "%");
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                DataTable dt = new DataTable();
-                da.Fill(dt);
-                dgvDocGia.DataSource = dt;
+                MessageBox.Show("Lỗi khi sửa thông tin độc giả: " + ex.Message);
             }
         }
 
-        // Khi nhấn vào một dòng trong DataGridView, dữ liệu sẽ tự động đổ lên textbox
+        // ------------------ XÓA ------------------
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            if (currentAction == "")
+            {
+                currentAction = "XOA";
+                btnThem.Enabled = false;
+                btnSua.Enabled = false;
+                btnHuy.Enabled = true;
+                MessageBox.Show("Đang trong chế độ Xóa", "Thông báo");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtMaSV.Text))
+            {
+                MessageBox.Show("Vui lòng chọn độc giả cần xóa!");
+                return;
+            }
+
+            var confirm = MessageBox.Show("Bạn có chắc muốn xóa độc giả này?",
+                "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (confirm == DialogResult.No) return;
+
+            try
+            {
+                var dg = db.SinhVien.FirstOrDefault(x => x.MaSV == txtMaSV.Text.Trim());
+                if (dg == null)
+                {
+                    MessageBox.Show("Không tìm thấy độc giả cần xóa!");
+                    return;
+                }
+
+                db.SinhVien.Remove(dg);
+                db.SaveChanges();
+
+                MessageBox.Show("Xóa độc giả thành công!");
+                LoadData();
+                ClearInput();
+                ResetButtonState();
+                SetControlState(false);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi xóa độc giả: " + ex.Message);
+            }
+        }
+
+        // ------------------ CLICK DGV ------------------
         private void dgvDocGia_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0) // đảm bảo không nhấn vào tiêu đề
+            if (e.RowIndex >= 0)
             {
                 DataGridViewRow row = dgvDocGia.Rows[e.RowIndex];
-
                 txtMaSV.Text = row.Cells["MaSV"].Value?.ToString();
                 txtTenSV.Text = row.Cells["TenSV"].Value?.ToString();
                 txtNganhHoc.Text = row.Cells["NganhHoc"].Value?.ToString();
@@ -175,10 +274,62 @@ namespace DOANNHOM
             }
         }
 
-        // Nút Thoát
-        private void btnThoat_Click_1(object sender, EventArgs e)
+        // ------------------ TÌM KIẾM ------------------
+        private void btnTimKiem_Click(object sender, EventArgs e)
+        {
+            string tuKhoa = txtTimKiem.Text.Trim();
+
+            if (string.IsNullOrEmpty(tuKhoa))
+            {
+                LoadData();
+                return;
+            }
+
+            var query = db.SinhVien.AsQueryable();
+
+            if (rbTimTheoMa.Checked)
+            {
+                query = query.Where(x => x.MaSV.Contains(tuKhoa));
+            }
+            else if (rbTimTheoTen.Checked)
+            {
+                query = query.Where(x => x.TenSV.Contains(tuKhoa));
+            }
+
+            var list = query.Select(x => new
+            {
+                x.MaSV,
+                x.TenSV,
+                x.NganhHoc,
+                x.KhoaHoc,
+                x.SoDienThoai
+            }).ToList();
+
+            dgvDocGia.DataSource = list;
+        }
+
+        private void txtTimKiem_TextChanged(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(txtTimKiem.Text))
+            {
+                LoadData();
+            }
+        }
+
+        // ------------------ THOÁT ------------------
+        private void btnThoat_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+        // ------------------ HỦY ------------------
+        private void btnHuy_Click(object sender, EventArgs e)
+        {
+            ClearInput();
+            SetControlState(false);
+            ResetButtonState();
+            
+        }
+        //done
     }
 }
