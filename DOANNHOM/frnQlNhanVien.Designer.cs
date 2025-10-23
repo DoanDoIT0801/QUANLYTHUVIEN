@@ -43,7 +43,6 @@
             this.txtSDT = new System.Windows.Forms.TextBox();
             this.btnXoa = new System.Windows.Forms.Button();
             this.btnDK = new System.Windows.Forms.Button();
-            this.btnDoiMK = new System.Windows.Forms.Button();
             this.txtMK = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.txtDiaChi = new System.Windows.Forms.TextBox();
@@ -55,9 +54,6 @@
             this.label3 = new System.Windows.Forms.Label();
             this.txtMaNV = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.btnChonAnh = new System.Windows.Forms.Button();
-            this.picNV = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.panel5.SuspendLayout();
@@ -65,8 +61,6 @@
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvNV)).BeginInit();
             this.panel2.SuspendLayout();
-            this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picNV)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -176,7 +170,6 @@
             this.panel2.Controls.Add(this.txtSDT);
             this.panel2.Controls.Add(this.btnXoa);
             this.panel2.Controls.Add(this.btnDK);
-            this.panel2.Controls.Add(this.btnDoiMK);
             this.panel2.Controls.Add(this.txtMK);
             this.panel2.Controls.Add(this.label6);
             this.panel2.Controls.Add(this.txtDiaChi);
@@ -188,7 +181,6 @@
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.txtMaNV);
             this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.panel4);
             this.panel2.Location = new System.Drawing.Point(15, 77);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(388, 323);
@@ -196,9 +188,9 @@
             // 
             // btnHuy
             // 
-            this.btnHuy.Location = new System.Drawing.Point(296, 282);
+            this.btnHuy.Location = new System.Drawing.Point(280, 282);
             this.btnHuy.Name = "btnHuy";
-            this.btnHuy.Size = new System.Drawing.Size(88, 30);
+            this.btnHuy.Size = new System.Drawing.Size(96, 30);
             this.btnHuy.TabIndex = 17;
             this.btnHuy.Text = "Hủy Bỏ";
             this.btnHuy.UseVisualStyleBackColor = true;
@@ -206,16 +198,16 @@
             // 
             // txtSDT
             // 
-            this.txtSDT.Location = new System.Drawing.Point(249, 70);
+            this.txtSDT.Location = new System.Drawing.Point(156, 153);
             this.txtSDT.Name = "txtSDT";
-            this.txtSDT.Size = new System.Drawing.Size(135, 22);
+            this.txtSDT.Size = new System.Drawing.Size(220, 22);
             this.txtSDT.TabIndex = 16;
             // 
             // btnXoa
             // 
-            this.btnXoa.Location = new System.Drawing.Point(214, 282);
+            this.btnXoa.Location = new System.Drawing.Point(155, 282);
             this.btnXoa.Name = "btnXoa";
-            this.btnXoa.Size = new System.Drawing.Size(76, 30);
+            this.btnXoa.Size = new System.Drawing.Size(101, 30);
             this.btnXoa.TabIndex = 15;
             this.btnXoa.Text = "Xóa";
             this.btnXoa.UseVisualStyleBackColor = true;
@@ -223,36 +215,26 @@
             // 
             // btnDK
             // 
-            this.btnDK.Location = new System.Drawing.Point(120, 282);
+            this.btnDK.Location = new System.Drawing.Point(17, 282);
             this.btnDK.Name = "btnDK";
-            this.btnDK.Size = new System.Drawing.Size(88, 30);
+            this.btnDK.Size = new System.Drawing.Size(104, 30);
             this.btnDK.TabIndex = 14;
             this.btnDK.Text = "Đăng Ký";
             this.btnDK.UseVisualStyleBackColor = true;
             this.btnDK.Click += new System.EventHandler(this.btnDK_Click);
             // 
-            // btnDoiMK
-            // 
-            this.btnDoiMK.Location = new System.Drawing.Point(6, 282);
-            this.btnDoiMK.Name = "btnDoiMK";
-            this.btnDoiMK.Size = new System.Drawing.Size(111, 30);
-            this.btnDoiMK.TabIndex = 13;
-            this.btnDoiMK.Text = "Đổi Mật Khẩu";
-            this.btnDoiMK.UseVisualStyleBackColor = true;
-            this.btnDoiMK.Click += new System.EventHandler(this.btnDoiMK_Click);
-            // 
             // txtMK
             // 
-            this.txtMK.Location = new System.Drawing.Point(250, 163);
+            this.txtMK.Location = new System.Drawing.Point(155, 56);
             this.txtMK.Name = "txtMK";
-            this.txtMK.Size = new System.Drawing.Size(135, 22);
+            this.txtMK.Size = new System.Drawing.Size(220, 22);
             this.txtMK.TabIndex = 12;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(152, 166);
+            this.label6.Location = new System.Drawing.Point(30, 59);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(68, 17);
             this.label6.TabIndex = 11;
@@ -260,7 +242,7 @@
             // 
             // txtDiaChi
             // 
-            this.txtDiaChi.Location = new System.Drawing.Point(156, 244);
+            this.txtDiaChi.Location = new System.Drawing.Point(156, 240);
             this.txtDiaChi.Name = "txtDiaChi";
             this.txtDiaChi.Size = new System.Drawing.Size(220, 22);
             this.txtDiaChi.TabIndex = 10;
@@ -269,7 +251,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(14, 247);
+            this.label5.Location = new System.Drawing.Point(14, 243);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(53, 17);
             this.label5.TabIndex = 9;
@@ -279,7 +261,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(152, 73);
+            this.label4.Location = new System.Drawing.Point(47, 153);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(36, 17);
             this.label4.TabIndex = 7;
@@ -289,7 +271,7 @@
             // 
             this.rdNu.AutoSize = true;
             this.rdNu.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rdNu.Location = new System.Drawing.Point(299, 118);
+            this.rdNu.Location = new System.Drawing.Point(178, 106);
             this.rdNu.Name = "rdNu";
             this.rdNu.Size = new System.Drawing.Size(47, 21);
             this.rdNu.TabIndex = 6;
@@ -301,7 +283,7 @@
             // 
             this.rdNam.AutoSize = true;
             this.rdNam.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rdNam.Location = new System.Drawing.Point(182, 118);
+            this.rdNam.Location = new System.Drawing.Point(61, 106);
             this.rdNam.Name = "rdNam";
             this.rdNam.Size = new System.Drawing.Size(58, 21);
             this.rdNam.TabIndex = 5;
@@ -311,7 +293,7 @@
             // 
             // txtTenNV
             // 
-            this.txtTenNV.Location = new System.Drawing.Point(156, 213);
+            this.txtTenNV.Location = new System.Drawing.Point(156, 197);
             this.txtTenNV.Name = "txtTenNV";
             this.txtTenNV.Size = new System.Drawing.Size(220, 22);
             this.txtTenNV.TabIndex = 4;
@@ -320,7 +302,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(14, 218);
+            this.label3.Location = new System.Drawing.Point(14, 202);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(103, 17);
             this.label3.TabIndex = 3;
@@ -328,48 +310,20 @@
             // 
             // txtMaNV
             // 
-            this.txtMaNV.Location = new System.Drawing.Point(249, 24);
+            this.txtMaNV.Location = new System.Drawing.Point(156, 13);
             this.txtMaNV.Name = "txtMaNV";
-            this.txtMaNV.Size = new System.Drawing.Size(135, 22);
+            this.txtMaNV.Size = new System.Drawing.Size(220, 22);
             this.txtMaNV.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(152, 27);
+            this.label2.Location = new System.Drawing.Point(30, 16);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(73, 17);
             this.label2.TabIndex = 1;
             this.label2.Text = "Mã NV-TK";
-            // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.btnChonAnh);
-            this.panel4.Controls.Add(this.picNV);
-            this.panel4.Location = new System.Drawing.Point(3, 3);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(143, 195);
-            this.panel4.TabIndex = 0;
-            // 
-            // btnChonAnh
-            // 
-            this.btnChonAnh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnChonAnh.Location = new System.Drawing.Point(3, 160);
-            this.btnChonAnh.Name = "btnChonAnh";
-            this.btnChonAnh.Size = new System.Drawing.Size(138, 31);
-            this.btnChonAnh.TabIndex = 1;
-            this.btnChonAnh.Text = "Chọn Ảnh";
-            this.btnChonAnh.UseVisualStyleBackColor = true;
-            // 
-            // picNV
-            // 
-            this.picNV.Location = new System.Drawing.Point(3, 3);
-            this.picNV.Name = "picNV";
-            this.picNV.Size = new System.Drawing.Size(136, 151);
-            this.picNV.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picNV.TabIndex = 0;
-            this.picNV.TabStop = false;
             // 
             // panel1
             // 
@@ -410,8 +364,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvNV)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.picNV)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -435,7 +387,6 @@
         private System.Windows.Forms.TextBox txtSDT;
         private System.Windows.Forms.Button btnXoa;
         private System.Windows.Forms.Button btnDK;
-        private System.Windows.Forms.Button btnDoiMK;
         private System.Windows.Forms.TextBox txtMK;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txtDiaChi;
@@ -447,9 +398,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtMaNV;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Button btnChonAnh;
-        private System.Windows.Forms.PictureBox picNV;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label label1;
     }

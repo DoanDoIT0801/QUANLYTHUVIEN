@@ -48,7 +48,7 @@ namespace DOANNHOM
         private void ResetButtonState()
         {
             btnDK.Enabled = true;
-            btnDoiMK.Enabled = true;
+            
             btnXoa.Enabled = true;
             btnHuy.Enabled = false;
             currentAction = "";
@@ -91,7 +91,7 @@ namespace DOANNHOM
                 currentAction = "THEM";
                 SetControlState(true);
                 ClearInput();
-                btnDoiMK.Enabled = false;
+                
                 btnXoa.Enabled = false;
                 btnHuy.Enabled = true;
                 return;
@@ -149,71 +149,6 @@ namespace DOANNHOM
             }
         }
 
-        // ------------------ ĐỔI MẬT KHẨU (SỬA) ------------------
-        private void btnDoiMK_Click(object sender, EventArgs e)
-        {
-            if (currentAction == "")
-            {
-                currentAction = "SUA";
-                SetControlState(true);
-                btnDK.Enabled = false;
-                btnXoa.Enabled = false;
-                btnHuy.Enabled = true;
-                return;
-            }
-
-            string maNV = txtMaNV.Text.Trim();
-            string matKhauMoi = txtMK.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(maNV))
-            {
-                MessageBox.Show("Vui lòng nhập mã nhân viên cần đổi mật khẩu!");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(matKhauMoi))
-            {
-                MessageBox.Show("Vui lòng nhập mật khẩu mới!");
-                return;
-            }
-
-            try
-            {
-                var nv = db.NhanVien.FirstOrDefault(x => x.MaNhanVien == maNV);
-                if (nv == null)
-                {
-                    MessageBox.Show("Không tìm thấy nhân viên có mã này!");
-                    return;
-                }
-
-                if (nv.MatKhau == matKhauMoi)
-                {
-                    MessageBox.Show("Mật khẩu mới trùng với mật khẩu cũ, vui lòng nhập mật khẩu khác!");
-                    return;
-                }
-
-                var confirm = MessageBox.Show(
-                    $"Bạn có chắc muốn đổi mật khẩu cho nhân viên '{nv.TenNhanVien}'?",
-                    "Xác nhận đổi mật khẩu",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (confirm == DialogResult.Yes)
-                {
-                    nv.MatKhau = matKhauMoi;
-                    db.SaveChanges();
-
-                    MessageBox.Show("Đổi mật khẩu thành công!");
-                    LoadData();
-                    ClearInput();
-                    ResetButtonState();
-                    SetControlState(false);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi khi đổi mật khẩu: " + ex.Message);
-            }
-        }
 
         // ------------------ XÓA ------------------
         private void btnXoa_Click(object sender, EventArgs e)
@@ -222,7 +157,7 @@ namespace DOANNHOM
             {
                 currentAction = "XOA";
                 btnDK.Enabled = false;
-                btnDoiMK.Enabled = false;
+                
                 btnHuy.Enabled = true;
                 return;
             }
