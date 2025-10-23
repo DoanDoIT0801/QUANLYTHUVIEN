@@ -84,6 +84,7 @@
             this.btnTraSach = new System.Windows.Forms.Button();
             this.btnGhiLai = new System.Windows.Forms.Button();
             this.btnHuyBo = new System.Windows.Forms.Button();
+            this.btnInPhieuMuon = new System.Windows.Forms.Button();
             this.flowLayoutPanel3.SuspendLayout();
             this.grSinhVien.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -610,11 +611,22 @@
             this.btnHuyBo.UseVisualStyleBackColor = true;
             this.btnHuyBo.Click += new System.EventHandler(this.btnHuyBo_Click);
             // 
+            // btnInPhieuMuon
+            // 
+            this.btnInPhieuMuon.Location = new System.Drawing.Point(801, 578);
+            this.btnInPhieuMuon.Name = "btnInPhieuMuon";
+            this.btnInPhieuMuon.Size = new System.Drawing.Size(147, 40);
+            this.btnInPhieuMuon.TabIndex = 8;
+            this.btnInPhieuMuon.Text = "In Phiếu Mượn";
+            this.btnInPhieuMuon.UseVisualStyleBackColor = true;
+            this.btnInPhieuMuon.Click += new System.EventHandler(this.btnInPhieuMuon_Click);
+            // 
             // frmMuonTra
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 576);
+            this.ClientSize = new System.Drawing.Size(984, 630);
+            this.Controls.Add(this.btnInPhieuMuon);
             this.Controls.Add(this.btnHuyBo);
             this.Controls.Add(this.btnGhiLai);
             this.Controls.Add(this.btnTraSach);
@@ -726,5 +738,6 @@
         private System.Windows.Forms.ComboBox cmbIDStudent;
         private System.Windows.Forms.RadioButton rbMaPhieuMuon;
         private System.Windows.Forms.RadioButton rbMaSV;
+        private System.Windows.Forms.Button btnInPhieuMuon;
     }
 }

@@ -60,12 +60,12 @@ namespace DOANNHOM
 
         private void quánLýNhânViênToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // mở quản lý nhân viên nếu có
+            kiemTraKichHoatForm(new frmQLNhanVien());
         }
 
         private void báoCáoThốngKêToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            kiemTraKichHoatForm(new frmBaoCaoThongKe());
+            kiemTraKichHoatForm(new frmBaoCaoThongKe1());
         }
 
         // ====== ĐĂNG XUẤT ======

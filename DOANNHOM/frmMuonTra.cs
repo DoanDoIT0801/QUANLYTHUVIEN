@@ -93,6 +93,7 @@ namespace DOANNHOM
             cmbIDStudent.Enabled = false;
             dtpNgayMuon.Enabled = false;
             dtpNgayTra.Enabled = false;
+            dtpNgayTra.Value = DateTime.Now;
         }
 
         // Khi chọn 1 dòng trên DataGridView
@@ -112,13 +113,13 @@ namespace DOANNHOM
             if (row.Cells["NgayTra"].Value != null && row.Cells["NgayTra"].Value != DBNull.Value)
                 dtpNgayTra.Value = Convert.ToDateTime(row.Cells["NgayTra"].Value);
             txtTTSachMuon.Text = row.Cells["GhiChu"].Value?.ToString();
-            cmbIDStudent.Text = row.Cells["MaSV"].Value.ToString();
+             cmbIDStudent.Text = row.Cells["MaSV"].Value.ToString();
             cmbTenSachMuon.Text = row.Cells["MaSach"].Value.ToString();
-        }
-
-        //  Khi chọn sách trong ComboBox
+        } 
+         
+        //  Khi c họn sách trong ComboBox
         private void cmbTenSachMuon_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        {                   
             if (cmbTenSachMuon.SelectedIndex == -1) return;
 
             string maSach = cmbTenSachMuon.SelectedValue.ToString();
@@ -161,7 +162,7 @@ namespace DOANNHOM
             dtpNgayMuon.Enabled = false;
             dtpNgayMuon.Value = DateTime.Now;
 
-            // Xóa dữ liệu cũ
+            //Xóa dữ liệu cũ
             txtMaPM.Clear();
             txtIDSach.Clear();
             txtNameSach.Clear();
@@ -173,6 +174,7 @@ namespace DOANNHOM
             cmbIDStudent.SelectedIndex = -1;
 
             MessageBox.Show("Chế độ mượn sách đã bật. Hãy chọn Sinh viên và Sách cần mượn.");
+            SetButtonState();
         }
 
         //  Nút "Ghi lại"
@@ -227,6 +229,40 @@ namespace DOANNHOM
                     soLuongsauMuon(maSach);
 
                     MessageBox.Show("Thêm phiếu mượn mới thành công!");
+                    int maPhieuMoi = phieu.MaPhieuMuon;
+
+                    // 👉 Cập nhật DataGridView chỉ hiển thị phiếu mới
+                    var dataMoi = ql.MuonTraSach
+                        .Include(m => m.SinhVien)
+                        .Include(m => m.Sach)
+                        .Where(m => m.MaPhieuMuon == maPhieuMoi)
+                        .Select(m => new
+                        {
+                            m.MaPhieuMuon,
+                            m.SinhVien.MaSV,
+                            m.SinhVien.TenSV,
+                            m.Sach.MaSach,
+                            m.Sach.TenSach,
+                            m.NgayMuon,
+                            m.NgayTra,
+                            m.GhiChu
+                        })
+                        .ToList();
+
+                    dgvMuonTra.DataSource = dataMoi;
+
+                    // 👉 Hỏi người dùng có muốn in phiếu ngay không
+                    if (MessageBox.Show("Bạn có muốn in phiếu mượn ngay không?", "In phiếu mượn", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        frmPhieuMuon frm = new frmPhieuMuon(maPhieuMoi);
+                        frm.ShowDialog();
+                    }
+
+                    
+                    LoadData();
+                    LamMoi();
+                    SetButtonState();
+
                 }
                 // Nếu đang gia hạn
                 else if (isExtending)
@@ -242,6 +278,21 @@ namespace DOANNHOM
                     if (phieu == null)
                     {
                         MessageBox.Show("Không tìm thấy phiếu mượn để gia hạn!");
+                        return;
+                    }
+                    DateTime ngayTraCu = phieu.NgayTra; // Ngày trả hiện tại
+                    DateTime ngayGiaHan = dtpNgayTra.Value; // Ngày trả mới
+
+                    
+                    if (ngayGiaHan <= ngayTraCu)
+                    {
+                        MessageBox.Show("Ngày gia hạn phải lớn hơn ngày trả hiện tại!");
+                        return;
+                    }
+
+                    if (ngayGiaHan <= DateTime.Now) // Phải lớn hơn ngày hiện tại
+                    {
+                        MessageBox.Show("Ngày gia hạn phải lớn hơn ngày hiện tại!");
                         return;
                     }
                     // ktra ngay gia han lon hon ngay muon
@@ -262,9 +313,8 @@ namespace DOANNHOM
                 }
 
                 LoadData();
-                DisableFields();
-                isAdding = false;
-                isExtending = false;
+                LamMoi();
+                SetButtonState(); 
             }
             catch (Exception ex)
             {
@@ -290,6 +340,7 @@ namespace DOANNHOM
             dtpNgayTra.Enabled = true;
 
             MessageBox.Show("Chế độ gia hạn đã bật. Hãy chọn ngày trả mới rồi bấm Ghi lại!");
+            SetButtonState();
         }
 
         //  Nút "Trả sách"
@@ -321,6 +372,8 @@ namespace DOANNHOM
 
                 MessageBox.Show("Trả sách thành công!");
                 LoadData();
+                LamMoi();
+                dtpNgayTra.Value = DateTime.Now;
             }
             catch (Exception ex)
             {
@@ -331,20 +384,11 @@ namespace DOANNHOM
         //  Nút "Hủy bỏ"
         private void btnHuyBo_Click(object sender, EventArgs e)
         {
-            isAdding = false;
-            DisableFields();
 
-            txtMaPM.Clear();
-            txtIDSach.Clear();
-            txtNameSach.Clear();
-            txtSoLuong.Clear();
-            txtIDStudent.Clear();
-            txtNameStudent.Clear();
-            txtTTSachMuon.Clear();
-            cmbTenSachMuon.SelectedIndex = -1;
-            cmbIDStudent.SelectedIndex = -1;
-
+            LamMoi();
             MessageBox.Show("Đã hủy thao tác!");
+            SetButtonState();
+            dtpNgayTra.Value = DateTime.Now;
         }
 
         //  Giảm số lượng khi mượn
@@ -439,6 +483,54 @@ namespace DOANNHOM
             {
                 LoadData(); // Gọi lại hàm hiển thị toàn bộ danh sách
             }
+        }
+        private void SetButtonState()
+        {
+            // Nếu đang thêm mới hoặc gia hạn -> chỉ cho phép bấm "Ghi lại" và "Hủy bỏ"
+            if (isAdding || isExtending)
+            {
+                btnMuon.Enabled = false;
+                btnGiaHan.Enabled = false;
+                btnTraSach.Enabled = false;
+                btnInPhieuMuon.Enabled = false;
+                btnHuyBo.Enabled = true;
+                btnGhiLai.Enabled = true;
+            }
+            else
+            {
+                // Ngược lại: bật tất cả lại bình thường
+                btnMuon.Enabled = true;
+                btnGiaHan.Enabled = true;
+                btnTraSach.Enabled = true;
+                btnInPhieuMuon.Enabled = true;
+                btnHuyBo.Enabled = true;
+                btnGhiLai.Enabled = true;
+            }
+        }
+        private void btnInPhieuMuon_Click(object sender, EventArgs e)
+        {
+
+            int maPM = int.Parse(txtMaPM.Text);
+            frmPhieuMuon pm = new frmPhieuMuon(maPM);
+            pm.ShowDialog();
+        }
+
+        private void LamMoi()
+        {
+            isAdding = false;
+            isExtending = false;
+            DisableFields();
+
+            txtMaPM.Clear();
+            txtIDSach.Clear();
+            txtNameSach.Clear();
+            txtSoLuong.Clear();
+            txtIDStudent.Clear();
+            txtNameStudent.Clear();
+            txtTTSachMuon.Clear();
+            cmbTenSachMuon.DataSource = null;
+            cmbIDStudent.DataSource = null;
+            LoadComboBox();
         }
     }
 }
