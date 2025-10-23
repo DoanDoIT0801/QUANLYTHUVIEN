@@ -1,189 +1,223 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SqlClient;
-using System.Drawing;
+using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using DOANNHOM.data;
 
 namespace DOANNHOM
 {
     public partial class frmQuanLySach : Form
     {
-        string connectionString = "data source=LAPTOP-66PONRPJ\\SQLEXPRESS;initial catalog=QuanLyThuVienDB;integrated security=True;trustservercertificate=True;MultipleActiveResultSets=True;App=EntityFramework";
-        DataTable dtSach;
-
+        private QuanLyThuVien db;
+        private List<SachViewModel> danhSachSachGoc;
         public frmQuanLySach()
         {
             InitializeComponent();
+            db = new QuanLyThuVien();
         }
 
         private void frmQuanLySach_Load(object sender, EventArgs e)
         {
             LoadData();
-
-            // Set default radio button
-            if (!rbLoaiSach.Checked && !rbTacGia.Checked && !rbNXB.Checked)
-            {
-                rbTenSach.Checked = true; // Hoặc chọn radio button mặc định khác
-            }
+            rbTenSach.Checked = true;
+            txtTK.TextChanged += txtTK_TextChanged;
         }
-
         private void LoadData()
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
-                    string query = @"SELECT S.TenSach, LS.TenLoaiSach, XB.NhaXuatBan, TG.TacGia, 
-                                            S.SoTrang, S.GiaBan, S.SoLuong 
-                                     FROM LoaiSach LS 
-                                     JOIN Sach S ON LS.MaLoai = S.MaLoai 
-                                     JOIN NhaXuatBan XB ON XB.MaXB = S.MaXB 
-                                     JOIN TacGia TG ON TG.MaTacGia = S.MaTacGia";
-
-                    SqlDataAdapter da = new SqlDataAdapter(query, conn);
-                    dtSach = new DataTable();
-                    da.Fill(dtSach);
-                    dgvDSTK.DataSource = dtSach;
-
-                    // Tùy chỉnh hiển thị DataGridView
-                    if (dgvDSTK.Columns.Count > 0)
+                var sachList = db.Sach
+                    .Include(s => s.LoaiSach)
+                    .Include(s => s.NhaXuatBan)
+                    .Include(s => s.TacGia)
+                    .Select(s => new SachViewModel
                     {
-                        dgvDSTK.Columns["TenSach"].HeaderText = "Tên Sách";
-                        dgvDSTK.Columns["TenLoaiSach"].HeaderText = "Loại Sách";
-                        dgvDSTK.Columns["NhaXuatBan"].HeaderText = "Nhà Xuất Bản";
-                        dgvDSTK.Columns["TacGia"].HeaderText = "Tác Giả";
-                        dgvDSTK.Columns["SoTrang"].HeaderText = "Số Trang";
-                        dgvDSTK.Columns["GiaBan"].HeaderText = "Giá Bán";
-                        dgvDSTK.Columns["SoLuong"].HeaderText = "Số Lượng";
+                        MaSach = s.MaSach,
+                        TenSach = s.TenSach,
+                        TenLoaiSach = s.LoaiSach.TenLoaiSach,
+                        NhaXuatBan = s.NhaXuatBan.NhaXuatBan1,
+                        TacGia = s.TacGia.TacGia1,
+                        SoTrang = s.SoTrang,
+                        GiaBan = s.GiaBan,
+                        SoLuong = s.SoLuong
+                    })
+                    .ToList();
 
-                        dgvDSTK.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                    }
-                }
+                danhSachSachGoc = sachList;
+                HienThiDanhSach(sachList);
+                CustomizeDataGridView();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Lỗi tải dữ liệu: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        // ================== HIỂN THỊ DỮ LIỆU ==================
+        private void HienThiDanhSach(List<SachViewModel> danhSach)
+        {
+            dgvDSTK.DataSource = null;
+            dgvDSTK.DataSource = danhSach;
+        }
+
+        // ================== TÙY CHỈNH DATAGRID ==================
+        private void CustomizeDataGridView()
+        {
+            if (dgvDSTK.Columns.Count == 0) return;
+
+            dgvDSTK.Columns["MaSach"].Visible = false;
+
+            dgvDSTK.Columns["TenSach"].HeaderText = "Tên Sách";
+            dgvDSTK.Columns["TenLoaiSach"].HeaderText = "Loại Sách";
+            dgvDSTK.Columns["NhaXuatBan"].HeaderText = "Nhà Xuất Bản";
+            dgvDSTK.Columns["TacGia"].HeaderText = "Tác Giả";
+            dgvDSTK.Columns["SoTrang"].HeaderText = "Số Trang";
+            dgvDSTK.Columns["GiaBan"].HeaderText = "Giá Bán (VNĐ)";
+            dgvDSTK.Columns["SoLuong"].HeaderText = "Số Lượng";
+
+            dgvDSTK.Columns["GiaBan"].DefaultCellStyle.Format = "N0";
+            dgvDSTK.Columns["GiaBan"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+            dgvDSTK.Columns["SoLuong"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvDSTK.Columns["SoTrang"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+            dgvDSTK.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvDSTK.AllowUserToAddRows = false;
+        }
+
+        // ================== TÌM KIẾM ==================
         private void TimKiem()
         {
-            if (dtSach == null || dtSach.Rows.Count == 0)
+            if (danhSachSachGoc == null || danhSachSachGoc.Count == 0) return;
+
+            string keyword = txtTK.Text.Trim().ToLower();
+            List<SachViewModel> ketQua;
+
+            if (string.IsNullOrWhiteSpace(keyword))
             {
-                MessageBox.Show("Chưa có dữ liệu để tìm kiếm!", "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                ketQua = danhSachSachGoc;
             }
-
-            string filterColumn = GetSelectedFilterColumn();
-            string keyword = txtTK.Text.Trim();
-
-            try
+            else
             {
-                DataView dv = dtSach.DefaultView;
-
-                if (string.IsNullOrWhiteSpace(keyword))
+                if (rbTenSach.Checked)
                 {
-                    // Nếu không có từ khóa, hiển thị tất cả
-                    dv.RowFilter = "";
+                    ketQua = danhSachSachGoc.Where(s => s.TenSach?.ToLower().Contains(keyword) == true).ToList();
+                }
+                else if (rbLoaiSach.Checked)
+                {
+                    ketQua = danhSachSachGoc.Where(s => s.TenLoaiSach?.ToLower().Contains(keyword) == true).ToList();
+                }
+                else if (rbTacGia.Checked)
+                {
+                    ketQua = danhSachSachGoc.Where(s => s.TacGia?.ToLower().Contains(keyword) == true).ToList();
+                }
+                else if (rbNXB.Checked)
+                {
+                    ketQua = danhSachSachGoc.Where(s => s.NhaXuatBan?.ToLower().Contains(keyword) == true).ToList();
                 }
                 else
                 {
-                    // Escape single quotes để tránh lỗi
-                    keyword = keyword.Replace("'", "''");
-                    dv.RowFilter = string.Format("[{0}] LIKE '%{1}%'", filterColumn, keyword);
+                    // Tìm theo tất cả các cột
+                    ketQua = danhSachSachGoc.Where(s =>
+                        s.TenSach?.ToLower().Contains(keyword) == true ||
+                        s.TenLoaiSach?.ToLower().Contains(keyword) == true ||
+                        s.TacGia?.ToLower().Contains(keyword) == true ||
+                        s.NhaXuatBan?.ToLower().Contains(keyword) == true
+                    ).ToList();
                 }
-
-                dgvDSTK.DataSource = dv;
-
-                // Hiển thị số kết quả tìm được (tùy chọn)
-                // lblKetQua.Text = $"Tìm thấy {dv.Count} kết quả";
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi tìm kiếm: " + ex.Message, "Lỗi",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+            HienThiDanhSach(ketQua);
         }
 
-        private string GetSelectedFilterColumn()
+        // ================== SỰ KIỆN ==================
+
+        private void rbTenSach_CheckedChanged(object sender, EventArgs e)
         {
-            if (rbLoaiSach.Checked)
-                return "TenLoaiSach";
-            else if (rbTacGia.Checked)
-                return "TacGia";
-            else if (rbNXB.Checked)
-                return "NhaXuatBan";
-            else
-                return "TenSach"; // Mặc định tìm theo tên sách
+            if (rbTenSach.Checked) TimKiem();
         }
-
 
         private void rbLoaiSach_CheckedChanged(object sender, EventArgs e)
         {
-            if (rbLoaiSach.Checked)
-                TimKiem();
+            if (rbLoaiSach.Checked) TimKiem();
         }
 
         private void rbTacGia_CheckedChanged(object sender, EventArgs e)
         {
-            if (rbTacGia.Checked)
-                TimKiem();
+            if (rbTacGia.Checked) TimKiem();
         }
 
         private void rbNXB_CheckedChanged(object sender, EventArgs e)
         {
-            if (rbNXB.Checked)
-                TimKiem();
+            if (rbNXB.Checked) TimKiem();
         }
 
+        // ================== MENU & CHUYỂN FORM ==================
         private void trangChủToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmDocGia frm = new frmDocGia();
             frm.Show();
-            this.Hide();
+            Hide();
         }
 
         private void độcGiảToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmDocGia frm = new frmDocGia();
             frm.Show();
-            this.Hide();
+            Hide();
         }
 
-        // Thêm nút làm mới dữ liệu (nếu cần)
-        private void btnLamMoi_Click(object sender, EventArgs e)
-        {
-            txtTK.Clear();
-            LoadData();
-        }
-
-        private void btnTheLoai_Click(object sender, EventArgs e)
+  
+        private void btnLoaiSach_Click_1(object sender, EventArgs e)
         {
 
-        }
-
-        private void groupBox1_Enter(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtTK_TextChanged_1(object sender, EventArgs e)
-        {
-            TimKiem();
-        }
-
-        private void btnTheLoai_Click_1(object sender, EventArgs e)
-        {
             frmLoaiSach frm = new frmLoaiSach();
             frm.Show();
             Hide();
         }
+
+        private void btnQLS_Click_1(object sender, EventArgs e)
+        {
+            frmSach frm = new frmSach();
+            frm.Show();
+            Hide();
+        }
+
+        private void btnTacGia_Click_1(object sender, EventArgs e)
+        {
+            frmTacGia frm = new frmTacGia();
+            frm.Show();
+            Hide();
+        }
+
+        private void btnNXB_Click_1(object sender, EventArgs e)
+        {
+            frmNhaXuatBan frm = new frmNhaXuatBan();
+            frm.Show();
+            Hide();
+        }
+
+        private void txtTK_TextChanged(object sender, EventArgs e)
+        {
+            TimKiem();
+        }
+
+        private void btnTrangChu_Click_1(object sender, EventArgs e)
+        {
+            frmTrangChu frm = new frmTrangChu();
+            frm.Show();
+            Hide();
+        }
+    }
+    public class SachViewModel
+    {
+        public string MaSach { get; set; }
+        public string TenSach { get; set; }
+        public string TenLoaiSach { get; set; }
+        public string NhaXuatBan { get; set; }
+        public string TacGia { get; set; }
+        public int SoTrang { get; set; }
+        public int GiaBan { get; set; }
+        public int SoLuong { get; set; }
     }
 }
