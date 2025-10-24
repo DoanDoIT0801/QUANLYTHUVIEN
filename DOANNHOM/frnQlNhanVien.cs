@@ -15,7 +15,7 @@ namespace DOANNHOM
 {
     public partial class frmQLNhanVien : Form
     {
-        /*string imagePath = "";*/
+
         QuanLyThuVien db = new QuanLyThuVien();
 
         private string currentAction = ""; // "THEM", "SUA", "XOA", ""
@@ -258,6 +258,8 @@ namespace DOANNHOM
         {
             this.Close();
         }
+
+        
         //done
     }
 }
